@@ -89,9 +89,13 @@ def _has_version(name):
     """Check whether a package identifier has a version component."""
     return name.rpartition("-")[2].replace(".", "").isdigit()
 
-def _chop_version(name):
-    """Remove any version component from the given package name."""
-    return name.rpartition("-")[0]
+def chop_version(maybe_versioned):
+    """Remove a version component, if any, from the given package name."""
+    unversioned, _, version = maybe_versioned.rpartition("-")
+    if unversioned and version.replace(".", "").isdigit():
+        return unversioned
+    else:
+        return maybe_versioned
 
 def _find_cabal(srcs):
     """Check that a .cabal file exists. Choose the root one."""
@@ -1379,7 +1383,7 @@ library
 """.format(
             name = resolve_package,
             packages = ",\n    ".join(unversioned_packages + vendored_packages.keys() + [
-                _chop_version(pkg)
+                chop_version(pkg)
                 for pkg in versioned_packages
             ]),
         ),
@@ -1435,7 +1439,7 @@ version: 0.0.0.0
     package_specs = json.decode(exec_result.stdout)
 
     resolved = {}
-    versioned_packages_names = {_chop_version(p): _version(p) for p in versioned_packages}
+    versioned_packages_names = {chop_version(p): _version(p) for p in versioned_packages}
     for package_spec in package_specs:
         parsed_spec = _parse_package_spec(
             package_spec,
@@ -1720,8 +1724,8 @@ def _parse_packages_list(packages, vendored_packages):
     unversioned_packages = []
 
     for package in packages:
-        has_version = _has_version(package)
-        unversioned = _chop_version(package) if has_version else package
+        unversioned = chop_version(package)
+        has_version = unversioned != package
         if unversioned in vendored_packages:
             fail("Duplicate package '{}'. Packages may not be listed in both 'packages' and 'vendored_packages'.".format(package))
         if unversioned in all_packages:
@@ -2027,7 +2031,7 @@ def _stack_snapshot_impl(repository_ctx):
             rdeps.append(name)
 
     visibilities = {}
-    for (name, spec) in resolved.items():
+    for name in resolved.keys():
         if name in packages.all or name in vendored_packages:
             visibility = ["//visibility:public"]
         else:
@@ -2052,7 +2056,7 @@ def _stack_snapshot_impl(repository_ctx):
         _parse_components_args_key(component): args
         for (component, args) in repository_ctx.attr.components_args.items()
     }
-    for (name, spec) in resolved.items():
+    for name in resolved.keys():
         all_components[name] = _get_components(user_components, name)
         user_components.pop(name, None)
     for package in user_components.keys():
