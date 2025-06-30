@@ -2195,6 +2195,17 @@ haskell_toolchain_library(name = "{name}", visibility = {visibility})
                 cabal_args = "cabal_args = \"{}\",".format(lib_args)
 
             if all_components[name].lib:
+                # TODO Redo me
+                if name != "ghc-lib-parser":
+                    redo_me_srcs = "glob([\"{dir}/**\"])".format(dir = package)
+                else:
+                    redo_me_srcs = \
+                        ("glob([\"{dir}/**\"]) + [" +
+                         "\":happy-lib-2.1.5/data/GLR_Base.hs\", " +
+                         "\":happy-lib-2.1.5/data/GLR_Lib.hs\", " +
+                         "\":happy-lib-2.1.5/data/HappyTemplate.hs\"" +
+                         "]").format(dir = package)
+
                 build_file_builder.append(
                     """
 haskell_cabal_library(
@@ -2202,7 +2213,7 @@ haskell_cabal_library(
     version = "{version}",
     haddock = {haddock},
     flags = {flags},
-    srcs = glob(["{dir}/**"]),
+    srcs = {redo_me_srcs},
     deps = {deps},
     setup_deps = {setup_deps},
     tools = {tools},
@@ -2217,7 +2228,7 @@ haskell_cabal_library(
                         version = version,
                         haddock = repr(repository_ctx.attr.haddock),
                         flags = repository_ctx.attr.flags.get(name, []),
-                        dir = package,
+                        redo_me_srcs = redo_me_srcs,
                         deps = library_deps + main_lib_deps,
                         setup_deps = setup_deps,
                         tools = library_tools,
@@ -2243,6 +2254,7 @@ haskell_cabal_library(
                 cabal_args = ""
                 if exe_args != None:
                     cabal_args = "cabal_args = \"{}\",".format(exe_args)
+
                 build_file_builder.append(
                     """
 haskell_cabal_binary(
@@ -2263,6 +2275,7 @@ haskell_cabal_binary(
                         name = name,
                         exe = exe,
                         flags = repository_ctx.attr.flags.get(name, []),
+                        redo_me_srcs = redo_me_srcs,
                         dir = package,
                         deps = library_deps + exe_component_deps + ([name] if all_components[name].lib else []),
                         setup_deps = setup_deps,
