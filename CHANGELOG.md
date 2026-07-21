@@ -11,6 +11,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 * Update `rules_python` to 2.5.1.  WORKSPACE users now need to call
   `py_repositories()` from `@rules_python//python:repositories.bzl` right
   after `rules_haskell_dependencies()`, see the `start` script.
+* Update `rules_nodejs` to 6.7.7.  In WORKSPACE mode, it needs `bazel_lib`,
+  which `rules_haskell_dependencies()` now also provides.
 
 ## [1.0] 2024-09-23
 

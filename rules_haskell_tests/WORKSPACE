@@ -29,14 +29,7 @@ rules_haskell_worker_dependencies()
 
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 
-# For testing if bzlmod is enabled
-http_archive(
-    name = "bazel_lib",
-    sha256 = "2a5ab58b8c021f10ce81d354e66ec4822b01188a2fa6c57be15c7381f8911ced",
-    strip_prefix = "bazel-lib-3.8.0",
-    url = "https://github.com/bazel-contrib/bazel-lib/releases/download/v3.8.0/bazel-lib-v3.8.0.tar.gz",
-)
-
+# `bazel_lib` comes from `rules_haskell_dependencies()`.  Also used for testing if bzlmod is enabled.
 load("@bazel_lib//lib:repositories.bzl", "bazel_lib_dependencies", "register_coreutils_toolchains")
 
 # Required bazel-lib dependencies

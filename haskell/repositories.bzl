@@ -134,8 +134,18 @@ def rules_haskell_dependencies():
         # required by rules_nixpkgs
         http_archive(
             name = "rules_nodejs",
-            sha256 = "0c2277164b1752bb71ecfba3107f01c6a8fb02e4835a790914c71dfadcf646ba",
-            urls = ["https://github.com/bazelbuild/rules_nodejs/releases/download/5.8.5/rules_nodejs-core-5.8.5.tar.gz"],
+            strip_prefix = "rules_nodejs-6.7.7",
+            sha256 = "f87453e0d6a97b4d2e6d22070a447b6d304727bf61ff8e31ce25ded0319005dd",
+            urls = ["https://github.com/bazel-contrib/rules_nodejs/releases/download/v6.7.7/rules_nodejs-v6.7.7.tar.gz"],
+        )
+
+        # required by rules_nodejs
+        maybe(
+            http_archive,
+            name = "bazel_lib",
+            sha256 = "2a5ab58b8c021f10ce81d354e66ec4822b01188a2fa6c57be15c7381f8911ced",
+            strip_prefix = "bazel-lib-3.8.0",
+            url = "https://github.com/bazel-contrib/bazel-lib/releases/download/v3.8.0/bazel-lib-v3.8.0.tar.gz",
         )
 
         http_archive(
