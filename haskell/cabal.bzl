@@ -632,12 +632,21 @@ def _haskell_cabal_library_impl(ctx):
     else:
         default_info_libs = depset([package_database])
 
+    runfiles = ctx.runfiles(files = [data_dir])
+    transitive_runfiles = []
+    for runfiles_attr in (
+        ctx.attr.srcs,
+        ctx.attr.deps,
+        ctx.attr.setup_deps,
+        ctx.attr.tools,
+    ):
+        for target in runfiles_attr:
+            transitive_runfiles.append(target[DefaultInfo].default_runfiles)
+    runfiles = runfiles.merge_all(transitive_runfiles)
+
     default_info = DefaultInfo(
         files = default_info_libs,
-        runfiles = ctx.runfiles(
-            files = [data_dir],
-            collect_default = True,
-        ),
+        runfiles = runfiles,
     )
     hs_info = HaskellInfo(
         package_databases = depset([package_database], transitive = [dep_info.package_databases]),
@@ -967,14 +976,23 @@ def _haskell_cabal_binary_impl(ctx):
         user_compile_flags = [],
         user_repl_flags = [],
     )
+
+    runfiles = ctx.runfiles(files = [data_dir], transitive_files = c.runfiles)
+    transitive_runfiles = []
+    for runfiles_attr in (
+        ctx.attr.srcs,
+        ctx.attr.deps,
+        ctx.attr.setup_deps,
+        ctx.attr.tools,
+    ):
+        for target in runfiles_attr:
+            transitive_runfiles.append(target[DefaultInfo].default_runfiles)
+    runfiles = runfiles.merge_all(transitive_runfiles)
+
     default_info = DefaultInfo(
         files = depset([binary]),
         executable = binary,
-        runfiles = ctx.runfiles(
-            files = [data_dir],
-            transitive_files = c.runfiles,
-            collect_default = True,
-        ),
+        runfiles = runfiles,
     )
 
     return [hs_info, cc_info, default_info]
