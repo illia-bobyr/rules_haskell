@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
+## [Unreleased]
+
+### Changed
+
+* Update `rules_python` to 2.0.1.  WORKSPACE users now need to call
+  `py_repositories()` from `@rules_python//python:repositories.bzl` right
+  after `rules_haskell_dependencies()`, see the `start` script.
+
 ## [1.0] 2024-09-23
 
 [1.0]: https://github.com/tweag/rules_haskell/compare/v0.19...v1.0
