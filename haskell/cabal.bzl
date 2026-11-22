@@ -10,6 +10,7 @@ load(":cc.bzl", "cc_interop_info", "ghc_cc_program_args")
 load(":haddock.bzl", "generate_unified_haddock_info")
 load(":private/actions/info.bzl", "library_info_output_groups")
 load(":private/actions/link.bzl", "darwin_flags_for_linking_indirect_cc_deps")
+load(":private/bzlmod.bzl", "is_bzlmod_enabled")
 load(
     ":private/cc_libraries.bzl",
     "get_cc_libraries",
@@ -1768,9 +1769,6 @@ def _to_string_keyed_label_list_dict(d):
             out.setdefault(string_key, []).append(label)
     return out
 
-def _is_bzlmod_enabled():
-    return str(Label("@rules_haskell//:BUILD.bazel")).startswith("@@")
-
 def _label_to_string(label):
     if check_bazel_version("6.0.0")[0]:
         # `str` serializes the label to its canonical name starting from bazel 6
@@ -2250,7 +2248,7 @@ haskell_toolchain_library(name = "{name}", visibility = {visibility})
 
             setup_deps = [
                 _label_to_string(Label("{}{}//:{}".format(
-                    "@@" if _is_bzlmod_enabled() else "@",
+                    "@@" if is_bzlmod_enabled() else "@",
                     repository_ctx.attr.name,
                     name,
                 )).relative(label))

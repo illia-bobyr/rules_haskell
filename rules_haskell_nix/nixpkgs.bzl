@@ -1,5 +1,6 @@
 """Workspace rules (Nixpkgs)"""
 
+load("@rules_haskell//haskell:private/bzlmod.bzl", "is_bzlmod_enabled")
 load("@rules_haskell//haskell:private/get_cpu_value.bzl", "get_cpu_value")
 load(
     "@rules_haskell//haskell:private/pkgdb_to_bzl.bzl",
@@ -42,9 +43,6 @@ Available versions:
 """.format(wanted = ghc_name, actual = result.stdout),
         )
 
-def _is_bzlmod_enabled():
-    return str(Label("@rules_haskell//:BUILD.bazel")).startswith("@@")
-
 def _ghc_nixpkgs_haskell_toolchain_impl(repository_ctx):
     paths = resolve_labels(repository_ctx, [
         "@rules_haskell//haskell:private/pkgdb_to_bzl.py",
@@ -78,7 +76,7 @@ def _ghc_nixpkgs_haskell_toolchain_impl(repository_ctx):
         libdir_path = repr(libdir_path),
         docdir_path = repr(docdir_path),
         tools = ["{}{}//:bin".format(
-            "@@" if _is_bzlmod_enabled() else "@",
+            "@@" if is_bzlmod_enabled() else "@",
             repository_ctx.attr.nixpkgs_ghc.workspace_name,
         )],
         version = repr(repository_ctx.attr.version),
