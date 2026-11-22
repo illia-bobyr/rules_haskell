@@ -2,6 +2,7 @@ load("@bazel_skylib//:bzl_library.bzl", "bzl_library")
 load("@bazel_skylib//rules:common_settings.bzl", "bool_flag")
 load("@io_bazel_stardoc//stardoc:stardoc.bzl", "stardoc")
 load("@rules_haskell//docs/pandoc:pandoc.bzl", "set_site_end_location")
+load("@rules_haskell//haskell:private/bzlmod.bzl", "is_bzlmod_enabled")
 load("@rules_python//python:defs.bzl", "py_binary")
 
 bool_flag(
@@ -85,6 +86,14 @@ bzl_library(
     ],
 )
 
+# In bzlmod mode, the module graph has newer `rules_cc` and `rules_java`,
+# that load `.bzl` files not covered by the `bzl_library` targets above.
+# These targets do not exist in the versions used in WORKSPACE mode.
+_BZLMOD_DEPS = [
+    "@rules_cc//cc:core_rules",
+    "@rules_java//java/private:proto_support",
+] if is_bzlmod_enabled() else []
+
 [
     (
         # Extract API documentation metadata to generate navigation and index.
@@ -98,7 +107,7 @@ bzl_library(
             provider_template = ":templates/metadata/provider.vm",
             rule_template = ":templates/metadata/rule.vm",
             tags = ["dont_test_on_windows"],
-            deps = lib_deps,
+            deps = lib_deps + _BZLMOD_DEPS,
         ),
         # Generate markdown API documentation.
         stardoc(
@@ -111,7 +120,7 @@ bzl_library(
             provider_template = ":templates/markdown/provider.vm",
             rule_template = ":templates/markdown/rule.vm",
             tags = ["dont_test_on_windows"],
-            deps = lib_deps,
+            deps = lib_deps + _BZLMOD_DEPS,
         ),
         # Convert markdown to html.
         genrule(
