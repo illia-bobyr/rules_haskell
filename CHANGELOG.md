@@ -8,7 +8,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
 ### Changed
 
-* Update `rules_python` to 2.0.1.  WORKSPACE users now need to call
+* Update `rules_python` to 2.5.1.  WORKSPACE users now need to call
   `py_repositories()` from `@rules_python//python:repositories.bzl` right
   after `rules_haskell_dependencies()`, see the `start` script.
 
