@@ -129,7 +129,7 @@ use_repo(
     non_modules_deps_1,
     "asterius_bundle_linux_amd64",
     "bazel_7",
-    "build_bazel_bazel_7_1_0",
+    "build_bazel_bazel_7_7_3",
     "glibc_locales",
     "linux_amd64_asterius-toolchain",
     "nixpkgs_config_cc",
