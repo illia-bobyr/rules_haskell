@@ -1,0 +1,99 @@
+diff --git a/go.bzl b/go.bzl
+--- a/go.bzl
++++ b/go.bzl
+@@ -18,6 +18,15 @@
+ 
+ RULES_GO = "rules_go" if _is_bzlmod_enabled() else "io_bazel_rules_go"
+ 
++def _rules_go_has_pack(repository_ctx):
++    """Whether `go_toolchain` requires a `pack` tool, as in `rules_go` >= 0.57.
++
++    `go_tool_binary` then builds it, as its `out_pack` output.
++    `RULES_GO_VERSION` is not reliable, so check for the attribute itself.
++    """
++    go_toolchain_bzl = repository_ctx.read(Label("@io_bazel_rules_go//go/private:go_toolchain.bzl"))
++    return '"pack": attr.label(' in go_toolchain_bzl
++
+ def _detect_host_platform(ctx):
+     """Copied from `rules_go`, since we have no other way to determine the proper `goarch` value.
+     https://github.com/bazelbuild/rules_go/blob/728a9e1874bc965b05c415d7f6b332a86ac35102/go/private/sdk.bzl#L239
+@@ -70,6 +79,8 @@
+ 
+ go_helpers_build = """
+ load("@{rules_go}//go:def.bzl", "go_sdk")
++load("@{rules_go}//go/private/rules:binary.bzl", "go_tool_binary")
++{pack_load}
+ 
+ def go_sdk_for_arch(go_version):
+     native.filegroup(
+@@ -96,15 +107,33 @@
+     )
+ """
+ 
++go_builder_build = """
++def go_builder(name, **kwargs):
++    go_tool_binary(name = name, **kwargs)
++"""
++
++go_builder_with_pack_build = """
++def go_builder(name, **kwargs):
++    go_tool_binary(name = name, out_pack = "pack.exe", **kwargs)
++
++    # `go_toolchain` takes an executable target, not a file.
++    non_go_reset_target(name = "pack", dep = ":pack.exe")
++"""
++
+ def _nixpkgs_go_helpers_impl(repository_ctx):
+     repository_ctx.file("BUILD.bazel", executable = False, content = "")
+     goos, goarch = _detect_host_platform(repository_ctx)
++    has_pack = _rules_go_has_pack(repository_ctx)
+     content = go_helpers_build.format(
+         rules_go = repository_ctx.attr.rules_go_repo_name,
++        pack_load = 'load("@{}//go/private/rules:transition.bzl", "non_go_reset_target")'.format(
++            repository_ctx.attr.rules_go_repo_name,
++        ) if has_pack else "",
+         goos = goos,
+         goarch = goarch,
+         exe = ".exe" if goos == "windows" else "",
+     )
++    content += go_builder_with_pack_build if has_pack else go_builder_build
+     repository_ctx.file("go_sdk.bzl", executable = False, content = content)
+ 
+ nixpkgs_go_helpers = repository_rule(
+@@ -138,6 +167,7 @@
+             goarch = p.goarch,
+             sdk = "@{sdk_repo}//:go_sdk",
+             builder = "@{sdk_repo}//:builder",
++            {pack}
+             link_flags = link_flags,
+             cgo_link_flags = cgo_link_flags,
+             visibility = ["//visibility:public"],
+@@ -184,6 +214,7 @@
+         rules_go = repository_ctx.attr.rules_go_repo_name,
+         sdk_repo = repository_ctx.attr.sdk_repo,
+         PLATFORMS = CANONICALIZED_PLATFORMS,
++        pack = 'pack = "@{}//:pack",'.format(repository_ctx.attr.sdk_repo) if _rules_go_has_pack(repository_ctx) else "",
+     )
+     build_content = go_toolchain_build.format(
+         goos = goos,
+@@ -209,10 +240,9 @@
+ )
+ 
+ go_sdk_build = """
+-load("@{rules_go}//go/private/rules:binary.bzl", "go_tool_binary")
+ load("@{rules_go}//go/private/rules:sdk.bzl", "package_list")
+ load("@{rules_go}//go:def.bzl", "go_sdk", "RULES_GO_VERSION")
+-load("@{helpers}//:go_sdk.bzl", "go_sdk_for_arch")
++load("@{helpers}//:go_sdk.bzl", "go_builder", "go_sdk_for_arch")
+ load(":go_version.bzl", "go_version")
+ 
+ package(default_visibility = ["//visibility:public"])
+@@ -239,7 +269,7 @@
+     srcs = glob(["pkg/tool/**", "bin/gofmt*"])
+ )
+ 
+-go_tool_binary(
++go_builder(
+     name = "builder",
+     srcs = ["@{rules_go}//go/tools/builders:builder_srcs"],
+     ldflags = "-X main.rulesGoStdlibPrefix=@{rules_go}//stdlib:" if TOOL_BINARY_NEEDS_STDLIB_PREFIX else None,

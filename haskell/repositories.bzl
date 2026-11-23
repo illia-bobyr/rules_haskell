@@ -16,6 +16,9 @@ _rules_nixpkgs_patches = {
     # `py_runtime_pair` from `@bazel_tools` fails in Bazel 8, and native `py_runtime` is gone in
     # Bazel 9.  See https://github.com/tweag/rules_nixpkgs/pull/691
     "python": ["@rules_haskell//haskell:private/rules_nixpkgs_python-rules_python.diff"],
+    # `rules_go` >= 0.57 requires `go_toolchain(pack = ...)`.
+    # See https://github.com/tweag/rules_nixpkgs/issues/667
+    "go": ["@rules_haskell//haskell:private/rules_nixpkgs_go-pack.diff"],
 }
 
 _rules_sh_version = "v0.5.0"
