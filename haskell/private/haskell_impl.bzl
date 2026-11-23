@@ -320,6 +320,7 @@ def _haskell_binary_common_impl(ctx, is_test):
 
     executable = binary
     extra_runfiles = []
+    extra_transitive_runfiles = []
 
     if inspect_coverage:
         binary_path = paths.join(ctx.workspace_name, binary.short_path)
@@ -367,10 +368,10 @@ def _haskell_binary_common_impl(ctx, is_test):
         mix_runfiles = [datum.mix_file for datum in coverage_data]
         srcs_runfiles = [_condition_coverage_src(hs, datum.src_file) for datum in coverage_data]
         extra_runfiles = [
-            ctx.file._bash_runfiles,
             hs.toolchain.tools.hpc,
             binary,
         ] + mix_runfiles + srcs_runfiles + java.inputs.to_list()
+        extra_transitive_runfiles = [ctx.attr._bash_runfiles[DefaultInfo].default_runfiles]
 
     return [
         hs_info,
@@ -381,7 +382,7 @@ def _haskell_binary_common_impl(ctx, is_test):
             runfiles = ctx.runfiles(
                 files = extra_runfiles + solibs,
                 collect_data = True,
-            ),
+            ).merge_all(extra_transitive_runfiles),
         ),
         # Advertise sources and transitive deps for HPC coverage. Without an
         # InstrumentedFilesInfo provider, Bazel does not deterministically
