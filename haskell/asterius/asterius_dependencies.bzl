@@ -1,6 +1,6 @@
 # Since this module depends on rules_nodejs, documentation using stardoc does not seem to be possible at the moment because of https://github.com/bazelbuild/rules_nodejs/issues/2874.
 
-load("@aspect_rules_js//npm:npm_import.bzl", "npm_translate_lock")
+load("@aspect_rules_js//npm:repositories.bzl", "npm_translate_lock")
 load("@bazel_tools//tools/build_defs/repo:utils.bzl", "maybe")
 load("@rules_nodejs//nodejs:repositories.bzl", "nodejs_register_toolchains")
 
@@ -45,6 +45,14 @@ load("@rules_haskell_npm//:repositories.bzl", "npm_repositories")
 npm_repositories()
 ```
 
+It also needs the `rules_js` toolchains, other than Node.js, which this function registers.  Call this
+before it:
+
+```
+load("@aspect_rules_js//js:toolchains.bzl", "rules_js_register_toolchains")
+rules_js_register_toolchains(register_nodejs_toolchain = False)
+```
+
     Args:
       register: Whether to register the asterius toolchain (must be set to False if bzlmod is activated)
     """
@@ -72,12 +80,8 @@ def asterius_dependencies_nix(
         register = True):
     """Install asterius dependencies based on nix.
 
-A `rules_haskell_npm` repository is created that needs to be used as follow in the WORKSPACE file:
-
-```
-load("@rules_haskell_npm//:repositories.bzl", "npm_repositories")
-npm_repositories()
-```
+A `rules_haskell_npm` repository is created, the WORKSPACE file needs the same setup as for
+`asterius_dependencies_bindist`.
 
     Args:
       nix_repository: The nix repository from which we try to install node.

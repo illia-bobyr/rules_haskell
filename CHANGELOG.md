@@ -25,6 +25,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
   script.  protobuf requires C++17: with Bazel 7 in WORKSPACE mode, set
   `--repo_env=BAZEL_CXXOPTS=-std=c++17`, and pass `cc_std = "c++17"` to
   `nixpkgs_cc_configure()`.
+* Update `aspect_rules_js` to 2.9.3, the last version that supports
+  WORKSPACE mode.  WORKSPACE users of the deprecated Asterius rules now
+  need to call `rules_js_register_toolchains(register_nodejs_toolchain =
+  False)`, see `asterius_dependencies_bindist()`.
 * Update `rules_nodejs` to 6.7.7.  In WORKSPACE mode, it needs `bazel_lib`,
   which `rules_haskell_dependencies()` now also provides.
 
