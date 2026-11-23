@@ -280,6 +280,14 @@ load(
 # Setup all Bazel dependencies required by rules_haskell.
 rules_haskell_dependencies()
 
+load("@bazel_features//:deps.bzl", "bazel_features_deps")
+
+bazel_features_deps()
+
+load("@rules_cc//cc:extensions.bzl", "compatibility_proxy_repo")
+
+compatibility_proxy_repo()
+
 load("@rules_python//python:repositories.bzl", "py_repositories")
 
 py_repositories()
@@ -401,7 +409,7 @@ if $BZLMOD; then
 module(name = "your_project_name_here", version = "0.1")
 
 bazel_dep(name = "rules_haskell", version = "0.0")
-bazel_dep(name = "rules_cc", version = "0.1.1")
+bazel_dep(name = "rules_cc", version = "0.2.28")
 
 haskell_toolchains = use_extension(
     "@rules_haskell//extensions:haskell_toolchains.bzl",

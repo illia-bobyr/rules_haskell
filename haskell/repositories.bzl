@@ -78,9 +78,17 @@ def rules_haskell_dependencies():
     maybe(
         http_archive,
         name = "rules_cc",
-        urls = ["https://github.com/bazelbuild/rules_cc/releases/download/0.1.1/rules_cc-0.1.1.tar.gz"],
-        sha256 = "712d77868b3152dd618c4d64faaddefcc5965f90f5de6e6dd1d5ddcd0be82d42",
-        strip_prefix = "rules_cc-0.1.1",
+        urls = ["https://github.com/bazelbuild/rules_cc/releases/download/0.2.28/rules_cc-0.2.28.tar.gz"],
+        sha256 = "0c51346fe5e7d2ee0b64a66623df0753bbb365877e6f85b8590e8de70448633e",
+        strip_prefix = "rules_cc-0.2.28",
+    )
+
+    # required by rules_cc: the C++ toolchain it configures loads `@apple_support`
+    maybe(
+        http_archive,
+        name = "apple_support",
+        sha256 = "2c1990c275a451ae20c14550770638a948fd0096e1f4f9c38fe1cf9fb2352bcf",
+        url = "https://github.com/bazelbuild/apple_support/releases/download/2.12.0/apple_support.2.12.0.tar.gz",
     )
 
     maybe(

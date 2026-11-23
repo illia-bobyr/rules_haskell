@@ -86,11 +86,13 @@ bzl_library(
     ],
 )
 
-# In bzlmod mode, the module graph has newer `rules_cc` and `rules_java`,
-# that load `.bzl` files not covered by the `bzl_library` targets above.
-# These targets do not exist in the versions used in WORKSPACE mode.
+# Newer `rules_cc` loads `.bzl` files not covered by the `bzl_library` targets above.
+_RULES_CC_DEPS = ["@rules_cc//cc:core_rules"]
+
+# In bzlmod mode, the module graph has a newer `rules_java`, that loads `.bzl`
+# files not covered by the `bzl_library` targets above.  This target does not
+# exist in the version used in WORKSPACE mode.
 _BZLMOD_DEPS = [
-    "@rules_cc//cc:core_rules",
     "@rules_java//java/private:proto_support",
 ] if is_bzlmod_enabled() else []
 
@@ -107,7 +109,7 @@ _BZLMOD_DEPS = [
             provider_template = ":templates/metadata/provider.vm",
             rule_template = ":templates/metadata/rule.vm",
             tags = ["dont_test_on_windows"],
-            deps = lib_deps + _BZLMOD_DEPS,
+            deps = lib_deps + _RULES_CC_DEPS + _BZLMOD_DEPS,
         ),
         # Generate markdown API documentation.
         stardoc(
@@ -120,7 +122,7 @@ _BZLMOD_DEPS = [
             provider_template = ":templates/markdown/provider.vm",
             rule_template = ":templates/markdown/rule.vm",
             tags = ["dont_test_on_windows"],
-            deps = lib_deps + _BZLMOD_DEPS,
+            deps = lib_deps + _RULES_CC_DEPS + _BZLMOD_DEPS,
         ),
         # Convert markdown to html.
         genrule(

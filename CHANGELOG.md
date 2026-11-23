@@ -9,7 +9,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 ### Changed
 
 * Update `rules_python` to 2.5.1.  WORKSPACE users now need to call
-  `py_repositories()` from `@rules_python//python:repositories.bzl` right
+  `py_repositories()` from `@rules_python//python:repositories.bzl` after
+  `rules_haskell_dependencies()`, see the `start` script.
+* WORKSPACE: Update `rules_cc` to 0.2.28.  WORKSPACE users now need to call
+  `bazel_features_deps()` from `@bazel_features//:deps.bzl` and then
+  `compatibility_proxy_repo()` from `@rules_cc//cc:extensions.bzl` right
   after `rules_haskell_dependencies()`, see the `start` script.
 * Update `rules_nodejs` to 6.7.7.  In WORKSPACE mode, it needs `bazel_lib`,
   which `rules_haskell_dependencies()` now also provides.
