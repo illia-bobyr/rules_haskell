@@ -196,10 +196,10 @@ def rules_haskell_dependencies():
         http_archive,
         name = "abseil-cpp",
         urls = [
-            "https://github.com/abseil/abseil-cpp/releases/download/20250512.1/abseil-cpp-20250512.1.tar.gz",
+            "https://github.com/abseil/abseil-cpp/releases/download/20260107.1/abseil-cpp-20260107.1.tar.gz",
         ],
-        sha256 = "9b7a064305e9fd94d124ffa6cc358592eb42b5da588fb4e07d09254aa40086db",
-        strip_prefix = "abseil-cpp-20250512.1",
+        sha256 = "4314e2a7cbac89cac25a2f2322870f343d81579756ceff7f431803c2c9090195",
+        strip_prefix = "abseil-cpp-20260107.1",
     )
 
     maybe(
