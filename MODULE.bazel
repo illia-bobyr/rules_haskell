@@ -38,7 +38,7 @@ bazel_dep(
 )
 bazel_dep(
     name = "rules_shell",
-    version = "0.2.0",
+    version = "0.10.0",
 )
 bazel_dep(
     name = "bazel_skylib",
