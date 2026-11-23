@@ -292,6 +292,18 @@ load("@rules_python//python:repositories.bzl", "py_repositories")
 
 py_repositories()
 
+load("@com_google_protobuf//:protobuf_deps.bzl", "protobuf_deps")
+
+protobuf_deps()
+
+load("@rules_java//java:rules_java_deps.bzl", "rules_java_dependencies")
+
+rules_java_dependencies()
+
+load("@rules_java//java:repositories.bzl", "rules_java_toolchains")
+
+rules_java_toolchains()
+
 load(
     "@rules_haskell//haskell:toolchain.bzl",
     "rules_haskell_toolchains",
@@ -364,7 +376,7 @@ EOF
 
 		nixpkgs_cc_configure(
 		    repository = "@nixpkgs",
-		    cc_std = "c++14",
+		    cc_std = "c++17",
 		)
 
 		nixpkgs_python_configure(
@@ -496,6 +508,12 @@ build --incompatible_enable_cc_toolchain_resolution
 
 # Enable automatic OS-specific config (e.g. build:linux, build:macos, build:windows).
 common --enable_platform_specific_config
+
+# C++ Configuration
+# -----------------
+# protobuf requires C++17.  The autoconfigured toolchain of Bazel 7 in WORKSPACE
+# mode uses C++14 by default.
+common --repo_env=BAZEL_CXXOPTS=-std=c++17
 
 # MacOS Configuration
 # -------------------

@@ -15,6 +15,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
   `bazel_features_deps()` from `@bazel_features//:deps.bzl` and then
   `compatibility_proxy_repo()` from `@rules_cc//cc:extensions.bzl` right
   after `rules_haskell_dependencies()`, see the `start` script.
+* Update `protobuf` to 33.6, and `rules_java` to 9.9.0.  WORKSPACE users
+  now need to call `protobuf_deps()`, `rules_java_dependencies()` and
+  `rules_java_toolchains()` right after `py_repositories()`, see the `start`
+  script.  protobuf requires C++17: with Bazel 7 in WORKSPACE mode, set
+  `--repo_env=BAZEL_CXXOPTS=-std=c++17`, and pass `cc_std = "c++17"` to
+  `nixpkgs_cc_configure()`.
 * Update `rules_nodejs` to 6.7.7.  In WORKSPACE mode, it needs `bazel_lib`,
   which `rules_haskell_dependencies()` now also provides.
 

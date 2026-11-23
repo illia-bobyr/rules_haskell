@@ -21,6 +21,18 @@ load("@rules_python//python:repositories.bzl", "py_repositories")
 
 py_repositories()
 
+load("@com_google_protobuf//:protobuf_deps.bzl", "protobuf_deps")
+
+protobuf_deps()
+
+load("@rules_java//java:rules_java_deps.bzl", "rules_java_dependencies")
+
+rules_java_dependencies()
+
+load("@rules_java//java:repositories.bzl", "rules_java_toolchains")
+
+rules_java_toolchains()
+
 load("@rules_shell//shell:repositories.bzl", "rules_shell_dependencies", "rules_shell_toolchains")
 
 rules_shell_dependencies()
@@ -60,12 +72,6 @@ rules_proto_dependencies()
 load("@rules_proto//proto:toolchains.bzl", "rules_proto_toolchains")
 
 rules_proto_toolchains()
-
-load("@rules_java//java:repositories.bzl", "rules_java_dependencies", "rules_java_toolchains")
-
-rules_java_dependencies()
-
-rules_java_toolchains()
 
 # For buildifier
 http_archive(

@@ -94,9 +94,9 @@ def rules_haskell_dependencies():
     maybe(
         http_archive,
         name = "rules_java",
-        sha256 = "976ef08b49c929741f201790e59e3807c72ad81f428c8bc953cdbeff5fed15eb",
+        sha256 = "0ad9898f81f8a3caf143fdbcf6229dbbff5da398b04c44c1c99c24888469a176",
         urls = [
-            "https://github.com/bazelbuild/rules_java/releases/download/7.4.0/rules_java-7.4.0.tar.gz",
+            "https://github.com/bazelbuild/rules_java/releases/download/9.9.0/rules_java-9.9.0.tar.gz",
         ],
     )
 
@@ -186,26 +186,20 @@ def rules_haskell_dependencies():
     maybe(
         http_archive,
         name = "com_google_protobuf",
-        sha256 = "7c3ebd7aaedd86fa5dc479a0fda803f602caaf78d8aff7ce83b89e1b8ae7442a",
-        strip_prefix = "protobuf-28.3",
+        sha256 = "ba4bbe69f788b6f6fac7938fab681f21a222998d3eeb36f01bd8c6f8e701ba90",
+        strip_prefix = "protobuf-33.6",
         urls = [
-            "https://github.com/protocolbuffers/protobuf/archive/refs/tags/v28.3.tar.gz",
+            "https://github.com/protocolbuffers/protobuf/releases/download/v33.6/protobuf-33.6.bazel.tar.gz",
         ],
-        patches = [
-            # see https://github.com/protocolbuffers/protobuf/issues/16844
-            # TODO: remove for protobuf version >= 31.0
-            "@rules_haskell//haskell:private/com_google_protobuf-protoc-dbghlp.diff",
-        ],
-        patch_args = ["-p1"],
     )
     maybe(
         http_archive,
-        name = "com_google_absl",
+        name = "abseil-cpp",
         urls = [
-            "https://github.com/abseil/abseil-cpp/releases/download/20240116.3/abseil-cpp-20240116.3.tar.gz",
+            "https://github.com/abseil/abseil-cpp/releases/download/20250512.1/abseil-cpp-20250512.1.tar.gz",
         ],
-        sha256 = "e887b423da5a1ba66e71610094fd7147ff2febfedccdfbf00f2c644ac21adf83",
-        strip_prefix = "abseil-cpp-20240116.3",
+        sha256 = "9b7a064305e9fd94d124ffa6cc358592eb42b5da588fb4e07d09254aa40086db",
+        strip_prefix = "abseil-cpp-20250512.1",
     )
 
     maybe(

@@ -2,7 +2,6 @@ load("@bazel_skylib//:bzl_library.bzl", "bzl_library")
 load("@bazel_skylib//rules:common_settings.bzl", "bool_flag")
 load("@io_bazel_stardoc//stardoc:stardoc.bzl", "stardoc")
 load("@rules_haskell//docs/pandoc:pandoc.bzl", "set_site_end_location")
-load("@rules_haskell//haskell:private/bzlmod.bzl", "is_bzlmod_enabled")
 load("@rules_python//python:defs.bzl", "py_binary")
 
 bool_flag(
@@ -33,6 +32,7 @@ libraries = {
         "@rules_cc//cc/common",
         "@rules_cc//cc/toolchains:srcs",
         "@rules_java//java:rules",
+        "@rules_java//java/private:proto_support",
         "@rules_shell//shell:rules_bzl",
         "//haskell",
     ],
@@ -42,6 +42,7 @@ libraries = {
         "@rules_cc//cc/common",
         "@rules_cc//cc/toolchains:srcs",
         "@rules_java//java:rules",
+        "@rules_java//java/private:proto_support",
         "//haskell",
     ],
     "cabal": [
@@ -64,6 +65,7 @@ libraries = {
         "@rules_cc//cc/common",
         "@rules_cc//cc/toolchains:srcs",
         "@rules_java//java:rules",
+        "@rules_java//java/private:proto_support",
         "@rules_proto//proto:defs",
         "//haskell",
     ],
@@ -89,13 +91,6 @@ bzl_library(
 # Newer `rules_cc` loads `.bzl` files not covered by the `bzl_library` targets above.
 _RULES_CC_DEPS = ["@rules_cc//cc:core_rules"]
 
-# In bzlmod mode, the module graph has a newer `rules_java`, that loads `.bzl`
-# files not covered by the `bzl_library` targets above.  This target does not
-# exist in the version used in WORKSPACE mode.
-_BZLMOD_DEPS = [
-    "@rules_java//java/private:proto_support",
-] if is_bzlmod_enabled() else []
-
 [
     (
         # Extract API documentation metadata to generate navigation and index.
@@ -109,7 +104,7 @@ _BZLMOD_DEPS = [
             provider_template = ":templates/metadata/provider.vm",
             rule_template = ":templates/metadata/rule.vm",
             tags = ["dont_test_on_windows"],
-            deps = lib_deps + _RULES_CC_DEPS + _BZLMOD_DEPS,
+            deps = lib_deps + _RULES_CC_DEPS,
         ),
         # Generate markdown API documentation.
         stardoc(
@@ -122,7 +117,7 @@ _BZLMOD_DEPS = [
             provider_template = ":templates/markdown/provider.vm",
             rule_template = ":templates/markdown/rule.vm",
             tags = ["dont_test_on_windows"],
-            deps = lib_deps + _RULES_CC_DEPS + _BZLMOD_DEPS,
+            deps = lib_deps + _RULES_CC_DEPS,
         ),
         # Convert markdown to html.
         genrule(

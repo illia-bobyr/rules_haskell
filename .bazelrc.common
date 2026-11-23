@@ -30,6 +30,12 @@ test --test_env=LANG=C.UTF-8 --test_env=LOCALE_ARCHIVE
 # Enable automatic OS-specific config (e.g. build:linux, build:macos, build:windows).
 common --enable_platform_specific_config
 
+# C++ Configuration
+# -----------------
+# protobuf requires C++17.  The autoconfigured toolchain of Bazel 7 in WORKSPACE
+# mode uses C++14 by default.
+common --repo_env=BAZEL_CXXOPTS=-std=c++17
+
 # MacOS Configuration
 # -------------------
 # do not use Xcode on macOS
