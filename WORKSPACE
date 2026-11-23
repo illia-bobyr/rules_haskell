@@ -62,10 +62,9 @@ rules_java_toolchains()
 # For buildifier
 http_archive(
     name = "io_bazel_rules_go",
-    sha256 = "b78f77458e77162f45b4564d6b20b6f92f56431ed59eaaab09e7819d1d850313",
+    sha256 = "d4a6e93dc63944172bc3b915a11bfa8d7391c9f1fdc11d7e43724f497617f0e5",
     urls = [
-        "https://mirror.bazel.build/github.com/bazelbuild/rules_go/releases/download/v0.53.0/rules_go-v0.53.0.zip",
-        "https://github.com/bazelbuild/rules_go/releases/download/v0.53.0/rules_go-v0.53.0.zip",
+        "https://github.com/bazel-contrib/rules_go/releases/download/v0.65.0/rules_go-v0.65.0.zip",
     ],
 )
 
@@ -156,7 +155,7 @@ load(
 
 go_rules_dependencies()
 
-go_register_toolchains(version = "1.20.2")
+go_register_toolchains(version = "1.26.11")
 
 load("@com_github_bazelbuild_buildtools//buildifier:deps.bzl", "buildifier_dependencies")
 
