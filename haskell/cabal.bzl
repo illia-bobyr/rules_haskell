@@ -2068,6 +2068,8 @@ def _stack_snapshot_unpinned_impl(repository_ctx):
         "BUILD.bazel",
         executable = False,
         content = """\
+load("@rules_shell//shell:sh_binary.bzl", "sh_binary")
+
 sh_binary(
     name = "pin",
     data = ["snapshot.json"],
