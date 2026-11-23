@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
 ## [Unreleased]
 
+### Added
+
+* Support for Bazel 8.  Bazel 7.7 is still supported.
+
 ### Changed
 
 * Update `rules_python` to 2.5.1.  WORKSPACE users now need to call

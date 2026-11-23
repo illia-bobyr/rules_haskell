@@ -79,6 +79,7 @@ generateBazelRc dir = do
 \ build:macos-bindist --incompatible_enable_cc_toolchain_resolution \n\
 \ build:windows-bindist --incompatible_enable_cc_toolchain_resolution \n\
 \ common --enable_platform_specific_config --experimental_cc_shared_library \n\
+\ common --enable_workspace \n\
 \ common:macos --repo_env=BAZEL_USE_CPP_ONLY_TOOLCHAIN=1 \n\
 \ common:windows --repo_env=BAZEL_DO_NOT_DETECT_CPP_TOOLCHAIN=1 \n\
 \ ")

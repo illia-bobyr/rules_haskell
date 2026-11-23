@@ -1,2 +1,6 @@
+# Bazel 8 disables WORKSPACE by default, CI also tests the examples in
+# WORKSPACE mode.  Bazel 9 ignores this flag, it only supports bzlmod.
+common --enable_workspace
+
 common:bzlmod --enable_bzlmod
 common:common --registry=file:///%workspace%/../registry --registry=https://bcr.bazel.build

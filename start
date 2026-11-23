@@ -11,11 +11,12 @@ GHC_VERSION=${GHC_VERSION:="9.4.6"}
 
 NIXPKGS_REVISION=${NIXPKGS_REVISION:-nixos-24.05}
 
-readonly MIN_BAZEL_MAJOR=6
-readonly MIN_BAZEL_MINOR=0
+# Keep in sync with `SUPPORTED_BAZEL_VERSIONS` in `haskell/private/versions.bzl`.
+readonly MIN_BAZEL_MAJOR=7
+readonly MIN_BAZEL_MINOR=7
 
-readonly MAX_BAZEL_MAJOR=6
-readonly MAX_BAZEL_MINOR=5
+readonly MAX_BAZEL_MAJOR=8
+readonly MAX_BAZEL_MINOR=9
 
 stderr () {
   >&2 echo "$*"
@@ -502,6 +503,8 @@ common:ci --color=no
 test:ci --test_output=errors
 
 common --enable_bzlmod=$BZLMOD
+# Bazel 8 disables WORKSPACE by default.
+common --enable_workspace
 
 # Should become the default in bazel 7
 build --incompatible_enable_cc_toolchain_resolution

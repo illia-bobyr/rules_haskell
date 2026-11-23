@@ -1,5 +1,8 @@
 # Disable bzlmod explicitly by default, see https://github.com/tweag/rules_haskell/issues/1977
 common --noenable_bzlmod
+# Bazel 8 disables WORKSPACE by default.  Bazel 9 ignores both flags, it
+# only supports bzlmod.
+common --enable_workspace
 
 common:bzlmod --enable_bzlmod
 # Note, have to use /// to make Bazel not crash on Windows

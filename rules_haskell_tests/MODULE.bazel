@@ -123,6 +123,7 @@ use_repo(
     "asterius_bundle_linux_amd64",
     "bazel_7",
     "build_bazel_bazel_7_7_3",
+    "build_bazel_bazel_8_9_0",
     "glibc_locales",
     "linux_amd64_asterius-toolchain",
     "nixpkgs_config_cc",

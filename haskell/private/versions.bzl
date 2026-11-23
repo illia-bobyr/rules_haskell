@@ -15,6 +15,7 @@
 # See https://github.com/tweag/rules_haskell/pull/1781#issuecomment-1187640454
 SUPPORTED_BAZEL_VERSIONS = [
     "7.7.3",
+    "8.9.0",
 ]
 
 SUPPORTED_NIXPKGS_BAZEL_PACKAGES = [
