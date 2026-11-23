@@ -9,7 +9,7 @@ bazel_dep(
 )
 bazel_dep(
     name = "rules_java",
-    version = "7.4.0",
+    version = "9.9.0",
 )
 bazel_dep(
     name = "rules_license",
