@@ -89,7 +89,7 @@ filegroup(
         name = "nixpkgs_config_cc",
         repository = "@nixpkgs_default",
         register = not bzlmod,
-        cc_std = "c++14",
+        cc_std = "c++17",
     )
 
     rules_haskell_asterius_toolchains(
