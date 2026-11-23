@@ -11,6 +11,13 @@ load(
 _rules_nixpkgs_version = "0.14.1"
 _rules_nixpkgs_sha256 = "54025689367205b835198677e686d8208b570bfd84e6872684ae657747673b97"
 
+# Also applied to the modules in the local registry, see `registry/modules/rules_nixpkgs_*`.
+_rules_nixpkgs_patches = {
+    # `py_runtime_pair` from `@bazel_tools` fails in Bazel 8, and native `py_runtime` is gone in
+    # Bazel 9.  See https://github.com/tweag/rules_nixpkgs/pull/691
+    "python": ["@rules_haskell//haskell:private/rules_nixpkgs_python-rules_python.diff"],
+}
+
 _rules_sh_version = "v0.5.0"
 _rules_sh_sha256 = "48b12cb1b2536ef6d8aa6111549098794aa05d21c8cf400493b842943636c709"
 
@@ -161,6 +168,8 @@ def rules_haskell_dependencies():
                 strip_prefix = strip_prefix + "/toolchains/" + toolchain,
                 urls = [rules_nixpkgs_url],
                 sha256 = _rules_nixpkgs_sha256,
+                patches = _rules_nixpkgs_patches.get(toolchain, []),
+                patch_args = ["-p1"],
             )
 
     maybe(
